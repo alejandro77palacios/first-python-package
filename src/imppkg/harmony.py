@@ -1,3 +1,7 @@
+"""
+This is a CLI tool
+"""
+
 import sys
 
 from imppkg.harmonic_mean import harmonic_mean
