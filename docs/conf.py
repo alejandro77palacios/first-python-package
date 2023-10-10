@@ -1,3 +1,4 @@
+import os
 from importlib import metadata
 PACKAGE_VERSION = metadata.version('pubpypack-harmony-alejandro-palacios')
 version = release = PACKAGE_VERSION
@@ -33,3 +34,25 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 html_theme = 'alabaster'
 html_static_path = ['_static']
 
+if os.environ.get("READTHEDOCS") == "True":
+    from pathlib import Path
+
+    PROJECT_ROOT = Path(__file__).parent.parent
+    PACKAGE_ROOT = PROJECT_ROOT / "src" / "imppkg"
+
+    def run_apidoc(_):
+        from sphinx.ext import apidoc
+        apidoc.main([
+            "--force",
+            "--implicit-namespaces",
+            "--module-first",
+            "--separate",
+            "-o",
+            str(PROJECT_ROOT / "docs" / "reference"),
+            str(PACKAGE_ROOT),
+            str(PACKAGE_ROOT / "*.c"),
+            str(PACKAGE_ROOT / "*.so"),
+        ])
+
+    def setup(app):
+        app.connect('builder-inited', run_apidoc)
